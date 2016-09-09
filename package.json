@@ -1,7 +1,6 @@
 {
   "name": "flickr",
   "version": "1.0.0",
-  "description": "",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,7 +12,14 @@
     "express3-handlebars": "^0.5.2"
   },
   "devDependencies": {
-    "connect-livereload": "^0.5.4",
-    "gulp": "^3.9.1"
-  }
+    "chai": "^3.5.0",
+    "grunt": "^1.0.1",
+    "grunt-cafe-mocha": "^0.1.13",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-exec": "^1.0.0",
+    "gulp": "^3.9.1",
+    "mocha": "^3.0.2"
+  },
+  "keywords": [],
+  "description": ""
 }

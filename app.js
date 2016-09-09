@@ -1,18 +1,56 @@
-var express = require('express');
-var app = express();
 var fortune = require('./lib/fortunecookies.js');
+var weather = require('./lib/getWeatherData.js');
+var express = require('express');
+var app     = express();
 // set up handlebars view engine
-var handlebars = require('express3-handlebars').create({ defaultLayout:'main' });
-
+var handlebars = require('express3-handlebars').create({defaultLayout:'main',
+														helpers: {
+															section: function(name, options){
+																if(!this._sections) this._sections = {};
+																this._sections[name] = options.fn(this);
+																return null;
+															}
+														}
+														/*, extname: '.hbs'*/});
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
+app.set('view cache', true); //Enable template caching for development
+app.disable('x-powered-by');
+
+app.set('port', process.env.PORT || 3000);
+// if(app.thing == null) console.log('haha')
 app.use(express.static(__dirname + '/public'));
+
+app.use(function(req, res, next){
+	res.locals.showTests = app.get('env') !== 'production' &&
+	req.query.test === '1';
+	next();
+});
+
+app.use(function(req, res, next){
+	if(!res.locals.partials) {
+		res.locals.partials = {};
+	}
+	res.locals.partials.weather = weather.getWeatherData();
+	next();
+});
+
 app.get('/', function(req, res) {
 	res.render('home');
 });
-app.get('/about', function(req, res){
-	res.render('about', { fortune: fortune.getFortune() } );
+app.get('/about', function(req, res) {
+	res.render('about', {
+		fortune: fortune.getFortune(),
+		pageTestScript: '/qa/tests-about.js'
+	});
 });
+app.get('/tours/hood-river', function(req, res){
+	res.render('tours/hood-river');
+});
+app.get('/tours/request-group-rate', function(req, res){
+	res.render('tours/request-group-rate');
+});
+
 
 // 404 catch-all handler (middleware)
 app.use(function(req, res, next){
@@ -26,7 +64,7 @@ app.use(function(err, req, res, next){
 	res.render('500');
 });
 
-app.listen(3000, function () {
-	console.log('Example app listening on port 3000!');
+app.listen(app.get('port'), function(){
+	console.log( 'Express started on http://localhost:' + 
+		app.get('port') + '; press Ctrl-C to terminate.' );
 });
-// app.use(express.static('public'));
