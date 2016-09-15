@@ -29,7 +29,7 @@
                 evt.preventDefault();
                 $.ajax('/data/nursery-rhyme', {
                     success: function(data){
-                        $nurseryRhyme.html(nurseryRhymeTemplate(data))
+                        $nurseryRhyme.html(nurseryRhymeTemplate(data));
                     }
                 });
             });

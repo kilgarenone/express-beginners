@@ -9,7 +9,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.14.0",
-    "express3-handlebars": "^0.5.2"
+    "express-handlebars": "^3.0.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",

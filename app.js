@@ -31,7 +31,7 @@ app.use(function(req, res, next){
 	if(!res.locals.partials) {
 		res.locals.partials = {};
 	}
-	res.locals.partials.weather = weather.getWeatherData();
+	res.locals.partials.weatherData = weather.getWeatherData();
 	next();
 });
 
