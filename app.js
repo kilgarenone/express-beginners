@@ -1,15 +1,30 @@
+// CREDENTIALS
+var credentials = require('./credentials.js');
 // LIBRARY
 var fortune = require('./lib/fortunecookies.js');
 var weather = require('./lib/getWeatherData.js');
 
 // NPM MODULES
-var express = require('express');
-var bodyParser  = require('body-parser');
+var express    = require('express');
+var bodyParser = require('body-parser');
 var formidable = require('formidable');
+var session    = require('express-session');
 
 // EXPRESS INITIATION
 var app     = express();
 
+// TEMP VARIABLES
+var sessionOptions = { 	resave: false,
+						saveUninitialized: false,
+						cookie: { maxAge: 30 * 60 * 1000 },
+						secret: credentials.cookieSecret
+					 };
+var isProductionEnv = app.get('env') === 'production';
+
+if (isProductionEnv) {
+	app.set('trust proxy', 1); // trust first proxy
+	sessionOptions.cookie.secure = true; // serve secure cookies
+}
 // RESPONSE'S HEADER CONFIGURATION
 // disable sensitive server information
 app.disable('x-powered-by');
@@ -38,7 +53,7 @@ app.set('port', process.env.PORT || 3000);
 // MIDDLEWARE
 // Accepts 'test=1' querystring to enable testing on a specific page
 app.use(function(req, res, next){
-	res.locals.showTests = app.get('env') !== 'production' &&
+	res.locals.showTests = !isProductionEnv &&
 	req.query.test === '1';
 	next();
 });
@@ -47,6 +62,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
 	extended: true
 }));
+
+app.use(session(sessionOptions));
 
 // Middleware to inject data into res.locals.partials
 app.use(function(req, res, next){
@@ -59,6 +76,7 @@ app.use(function(req, res, next){
 
 // ROUTES 
 app.get('/', function(req, res) {
+	req.session.damnson = 'WOWOWWWW';
 	res.render('home');
 });
 
@@ -123,7 +141,6 @@ app.post('/contest/vacation-photo/:year/:month', function(req, res){
 		res.redirect(303, '/thank-you');
 	});
 });
-
 
 app.post('/process', function(req, res){
 	console.log('Form (from querystring): ' + req.query.form);
