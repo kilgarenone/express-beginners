@@ -6,9 +6,12 @@ var weather = require('./lib/getWeatherData.js');
 
 // NPM MODULES
 var express    = require('express');
+var path 		= require('path');
 var bodyParser = require('body-parser');
 var formidable = require('formidable');
 var session    = require('express-session');
+var connect    = require('connect');
+var compress = require('compression');
 
 // EXPRESS INITIATION
 var app     = express();
@@ -30,7 +33,7 @@ if (isProductionEnv) {
 app.disable('x-powered-by');
 
 // STATIC RESOURCES
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // ENGINE
 // Set up handlebars view engine
@@ -49,8 +52,18 @@ app.set('view engine', 'handlebars');
 
 // PORT CONFIGURATION
 app.set('port', process.env.PORT || 3000);
-
 // MIDDLEWARE
+// Serve the fav icon
+app.use(require('serve-favicon')(path.join(__dirname, 'public', 'img', 'favicon.ico')));
+// Parse request body data into JSON obj
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+	extended: true
+}));
+// SET UP SESSION/COOKIES
+app.use(session(sessionOptions));
+// ENABLE GZIP COMPRESSION
+app.use(compress({ threshold: 0 })); 
 // Accepts 'test=1' querystring to enable testing on a specific page
 app.use(function(req, res, next){
 	res.locals.showTests = !isProductionEnv &&
@@ -58,12 +71,6 @@ app.use(function(req, res, next){
 	next();
 });
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-	extended: true
-}));
-
-app.use(session(sessionOptions));
 
 // Middleware to inject data into res.locals.partials
 app.use(function(req, res, next){
