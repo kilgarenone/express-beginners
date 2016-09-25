@@ -23,9 +23,10 @@ var sessionOptions = { 	resave: false,
 						cookie: { maxAge: 30 * 60 * 1000 },
 						secret: credentials.cookieSecret
 					 };
-var isProductionEnv = app.get('env') === 'production';
 
-if (isProductionEnv) {
+var development = app.get('env') !== 'production';
+
+if (!development) {
 	app.set('trust proxy', 1); // trust first proxy
 	sessionOptions.cookie.secure = true; // serve secure cookies
 }
@@ -80,7 +81,7 @@ app.use(session(sessionOptions));
 app.use(compress({ threshold: 0 })); 
 // Accepts 'test=1' querystring to enable testing on a specific page
 app.use(function(req, res, next){
-	res.locals.showTests = !isProductionEnv &&
+	res.locals.showTests = development &&
 	req.query.test === '1';
 	next();
 });
@@ -194,6 +195,7 @@ app.use(function(err, req, res, next){
 
 // SERVER CONFIGURATION
 app.listen(app.get('port'), function(){
-	console.log( 'Express started on http://localhost:' + 
-		app.get('port') + '; press Ctrl-C to terminate.' );
+	console.log( 'Express started in ' + app.get('env') +
+	' mode on http://localhost:' + app.get('port') +
+	'; press Ctrl-C to terminate.' );
 });
