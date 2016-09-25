@@ -3,6 +3,7 @@ var credentials = require('./credentials.js');
 // LIBRARY
 var fortune = require('./lib/fortunecookies.js');
 var weather = require('./lib/getWeatherData.js');
+var emailService = require('./lib/email.js')(credentials);
 
 // NPM MODULES
 var express    = require('express');
@@ -11,7 +12,7 @@ var bodyParser = require('body-parser');
 var formidable = require('formidable');
 var session    = require('express-session');
 var connect    = require('connect');
-var compress = require('compression');
+var compress 	= require('compression');
 
 // EXPRESS INITIATION
 var app     = express();
@@ -28,6 +29,7 @@ if (isProductionEnv) {
 	app.set('trust proxy', 1); // trust first proxy
 	sessionOptions.cookie.secure = true; // serve secure cookies
 }
+
 // RESPONSE'S HEADER CONFIGURATION
 // disable sensitive server information
 app.disable('x-powered-by');
@@ -49,6 +51,18 @@ var handlebars = require('express-handlebars').create({ defaultLayout:'main',
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
 // app.set('view cache', true); //Enable template caching for development
+
+// SEND EMAIL AND EMAIL ERROR TO NOTIFIY ONCE OCCURED
+/*
+	try {
+		// do something iffy here....
+	} catch(ex) {
+		email.sendError('the widget broke down!', __filename, ex);
+		// ... display error message to user
+	}
+
+	emailService.send('2313ersddfdf@gmail.com', 'Hood River tours on sale today!', 'Get \'em while they\'re hot!');
+*/
 
 // PORT CONFIGURATION
 app.set('port', process.env.PORT || 3000);
