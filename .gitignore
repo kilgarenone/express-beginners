@@ -8,4 +8,4 @@ node_modules
 credentials.js
 
 # don't commit log files
-log
+log/
