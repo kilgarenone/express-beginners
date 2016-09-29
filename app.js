@@ -6,6 +6,7 @@ var weather = require('./lib/getWeatherData.js');
 var emailService = require('./lib/email.js')(credentials);
 
 // NPM MODULES
+var http 	= require('http');
 var express    = require('express');
 var path 		= require('path');
 var bodyParser = require('body-parser');
@@ -18,6 +19,7 @@ var compress 	= require('compression');
 var app     = express();
 
 // TEMP VARIABLES
+var server;
 var sessionOptions = { 	resave: false,
 						saveUninitialized: false,
 						cookie: { maxAge: 30 * 60 * 1000 },
@@ -68,6 +70,60 @@ app.set('view engine', 'handlebars');
 // PORT CONFIGURATION
 app.set('port', process.env.PORT || 3000);
 // MIDDLEWARE
+// Exception handler as a domain to trap any uncaught errors in every request in a domain
+app.use(function(req, res, next){
+	// create a domain for this request
+	var domain = require('domain').create();
+	// handle errors on this domain
+	domain.on('error', function(err){
+		console.error('DOMAIN ERROR CAUGHT\n', err.stack);
+		try {
+			// failsafe shutdown in 5 seconds
+			setTimeout(function(){
+				console.error('Failsafe shutdown.');
+				process.exit(1);
+			}, 5000);
+			// disconnect from the cluster
+			var worker = require('cluster').worker;
+			if(worker) worker.disconnect();
+			// stop taking new requests
+			server.close();
+			try {
+				// attempt to use Express error route
+				next(err);
+			} catch(error){
+				// if Express error route failed, try
+				// plain Node response
+				console.error('Express error mechanism failed.\n', error.stack);
+				res.statusCode = 500;
+				res.setHeader('content-type', 'text/plain');
+				res.end('Server error.');
+			}
+		} catch(error){
+			console.error('Unable to send 500 response.\n', error.stack);
+		}
+	});
+	// add the request and response objects to the domain
+	domain.add(req);
+	domain.add(res);
+	// execute the rest of the request chain in the domain
+	domain.run(next);
+});
+
+// Logger
+switch(app.get('env')){
+	case 'development':
+		// compact, colorful dev logging
+		app.use(require('morgan')('dev'));
+		break;
+	case 'production':
+		// module 'express-logger' supports daily log rotation
+		app.use(require('express-logger')({
+			path: __dirname + '/log/requests.log'
+		}));
+		break;
+}
+
 // Serve the fav icon
 app.use(require('serve-favicon')(path.join(__dirname, 'public', 'img', 'favicon.ico')));
 // Parse request body data into JSON obj
@@ -101,6 +157,13 @@ app.get('/', function(req, res) {
 	req.session.damnson = 'WOWOWWWW';
 	res.render('home');
 });
+
+app.get('/epic-fail', function(req, res){
+ process.nextTick(function(){
+ throw new Error('Kaboom!');
+ });
+});
+
 
 app.get('/about', function(req, res) {
 	res.render('about', {
@@ -194,8 +257,26 @@ app.use(function(err, req, res, next){
 });
 
 // SERVER CONFIGURATION
-app.listen(app.get('port'), function(){
-	console.log( 'Express started in ' + app.get('env') +
-	' mode on http://localhost:' + app.get('port') +
-	'; press Ctrl-C to terminate.' );
-});
+// app.listen(app.get('port'), function(){
+// 	console.log( 'Express started in ' + app.get('env') +
+// 	' mode on http://localhost:' + app.get('port') +
+// 	'; press Ctrl-C to terminate.' );
+// });
+
+function startServer() {
+	server = http.createServer(app).listen(app.get('port'), function(){
+		console.log( 'Express started in ' + app.get('env') +
+			' mode on http://localhost:' + app.get('port') +
+			'; press Ctrl-C to terminate.' );
+	});
+}
+
+if(require.main === module){
+	// application run directly; start app server
+	startServer();
+} else {
+	// application imported as a module via "require": export function
+	// to create server
+	module.exports = startServer;
+}
+
