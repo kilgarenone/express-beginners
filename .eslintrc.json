@@ -1,0 +1,41 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "node": true
+    },
+    "extends": "airbnb-base",
+    "parserOptions": {
+        "sourceType": "module"
+    },
+    "rules": {
+        "indent": [
+            "error", 
+            4,
+            {   "SwitchCase" : 1,
+                "VariableDeclarator": { "var": 4, "let": 4, "const": 5 },
+                "MemberExpression": 1,
+                "FunctionExpression": { "parameters": "first" }
+            }
+        ],
+        "linebreak-style": [
+            "error",
+            "windows"
+        ],
+        "no-param-reassign": [
+            2, 
+            { 
+              "props": false
+            }
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ]
+    }
+}
