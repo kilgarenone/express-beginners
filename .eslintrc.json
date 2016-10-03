@@ -51,6 +51,7 @@
         ],
         "quotes": [
             "error",
+            "single",
             {
               "avoidEscape": true
             }
