@@ -31,6 +31,7 @@
     "grunt-contrib-jshint": "^1.0.0",
     "grunt-exec": "^1.0.0",
     "gulp": "^3.9.1",
+    "gulp-express": "^0.3.5",
     "mocha": "^3.0.2"
   },
   "keywords": [],

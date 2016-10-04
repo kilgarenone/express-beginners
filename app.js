@@ -1,3 +1,4 @@
+
 // CREDENTIALS
 const credentials = require('./credentials.js');
 // LIBRARY
@@ -23,7 +24,7 @@ const compress = require('compression');
 const app = express();
 
 // TEMP VARIABLES
-let server;
+var server;
 const sessionOptions = { resave: false,
                          saveUninitialized: false,
                          cookie: { maxAge: 30 * 60 * 1000 },
@@ -121,16 +122,14 @@ app.use((req, res, next) => {
 });
 
 // Logger
-switch (app.get('env')) {
-    case 'development':
+if (development) {
     // compact, colorful dev logging
-        app.use(morgan('dev'));
-        break;
-    default:// In Production environment
-        // module 'express-logger' supports daily log rotation
-        app.use(expressLogger({
-            path: `${__dirname}/log/requests.log`,
-        }));
+    app.use(morgan('dev'));
+} else {
+    // module 'express-logger' supports daily log rotation
+    app.use(expressLogger({
+        path: `${__dirname}/log/requests.log`,
+    }));
 }
 
 // Serve the fav icon
@@ -146,8 +145,7 @@ app.use(session(sessionOptions));
 app.use(compress({ threshold: 0 }));
 // Accepts 'test=1' querystring to enable testing on a specific page
 app.use((req, res, next) => {
-    res.locals.showTests = development &&
-    req.query.test === '1';
+    res.locals.showTests = development && req.query.test === '1';
     next();
 });
 
