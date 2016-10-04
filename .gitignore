@@ -10,3 +10,5 @@ credentials.js
 
 # don't commit log files
 log/
+# don't commit TypeScript's definition files
+typings/
