@@ -1,14 +1,15 @@
 {
-  "name": "flickr",
+  "name": "storeup",
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --reporter spec",
     "start": "node app.js"
   },
-  "author": "",
+  "author": "Kheoh Yee Wei",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
     "compression": "^1.6.2",
     "connect": "^3.5.0",
@@ -22,18 +23,19 @@
     "serve-favicon": "^2.3.0"
   },
   "devDependencies": {
+    "browser-sync": "^2.17.0",
     "chai": "^3.5.0",
     "eslint": "^3.7.0",
     "eslint-config-airbnb-base": "^8.0.0",
     "eslint-plugin-import": "^2.0.0",
-    "grunt": "^1.0.1",
-    "grunt-cafe-mocha": "^0.1.13",
-    "grunt-contrib-jshint": "^1.0.0",
-    "grunt-exec": "^1.0.0",
     "gulp": "^3.9.1",
-    "gulp-express": "^0.3.5",
+    "gulp-mocha": "^3.0.1",
+    "gulp-sass": "^2.3.2",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-util": "^3.0.7",
+    "gulp-watch": "^4.3.10",
     "mocha": "^3.0.2"
   },
   "keywords": [],
-  "description": ""
+  "description": "Modern Express boostrap for beginners."
 }
