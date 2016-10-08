@@ -3,18 +3,25 @@
         "browser": true,
         "commonjs": true,
         "es6": true,
-        "node": true
+        "node": true,
+        "mocha": true
     },
     "extends": "airbnb-base",
     "parserOptions": {
         "sourceType": "module"
     },
     "rules": {
+        "import/no-extraneous-dependencies": [
+            "error", 
+            { 
+              "devDependencies": [ "**/gulpfile.js", "**/test/**/*.js" ]
+            }
+        ],
         "no-var": 0,
         "no-unused-vars": [
             "error", 
             { 
-              "args": "after-used" 
+              "args": "none" 
             }
         ],
         "quote-props": [
