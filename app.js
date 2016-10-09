@@ -4,9 +4,12 @@ const credentials = require('./credentials.js');
 // LIBRARY
 const fortune = require('./lib/fortunecookies.js');
 const weather = require('./lib/getWeatherData.js');
+const logger = require('./lib/logger.js');
 // const emailService = require('./lib/email.js')(credentials);
 
 // NPM MODULES
+// const fs = require('fs');
+const compress = require('compression');
 const http = require('http');
 const express = require('express');
 const domain = require('domain');
@@ -15,10 +18,8 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const formidable = require('formidable');
 const session = require('express-session');
-const expressLogger = require('express-logger');
 const morgan = require('morgan');
 // const connect = require('connect');
-const compress = require('compression');
 
 // EXPRESS INITIATION
 const app = express();
@@ -37,6 +38,12 @@ if (!development) {
     app.set('trust proxy', 1); // trust first proxy
     sessionOptions.cookie.secure = true; // serve secure cookies
 }
+
+logger.debug('Debugging info');
+logger.verbose('Verbose info');
+logger.info('Hello world');
+logger.warn('Warning message');
+logger.error('Error info');
 
 // RESPONSE'S HEADER CONFIGURATION
 // disable sensitive server information
@@ -124,12 +131,7 @@ app.use((req, res, next) => {
 // Logger
 if (development) {
     // compact, colorful dev logging
-    app.use(morgan('dev'));
-} else {
-    // module 'express-logger' supports daily log rotation
-    app.use(expressLogger({
-        path: `${__dirname}/log/requests.log`,
-    }));
+    app.use(morgan('tiny', { stream: logger.stream }));
 }
 
 // Serve the fav icon
