@@ -1,9 +1,5 @@
 var gulp = require('gulp');
-var sass = require('gulp-sass');
-var mocha = require('gulp-mocha');
-var util = require('gulp-util');
-var watch = require('gulp-watch');
-var sourceMap = require('gulp-sourcemaps');
+var $ = require('gulp-load-plugins')();
 var spawn = require('child_process').spawn;
 var browserSync = require('browser-sync').create();
 
@@ -18,10 +14,10 @@ gulp.task('start-browser-sync', () => {
 
 gulp.task('scss-to-css', () => {
     const stream = gulp.src('scss/*.scss')
-                        .pipe(watch('scss/*.scss'))
-                        .pipe(sourceMap.init())
-                        .pipe(sass())
-                        .pipe(sourceMap.write())
+                        .pipe($.watch('scss/*.scss'))
+                        .pipe($.sourceMap.init())
+                        .pipe($.sass())
+                        .pipe($.sourceMap.write())
                         .pipe(gulp.dest('css'))
                         .pipe(reload({ stream: true })); // prompts a reload after compilation
 
@@ -37,8 +33,8 @@ gulp.task('watch-file-change', ['start-browser-sync'], () => {   // TODO: add ta
 
 gulp.task('test', () => {
     const testResults = gulp.src(['test/**/*.js'], { read: false })
-                            .pipe(mocha({ reporter: 'spec' }))
-                            .on('error', util.log);
+                            .pipe($.mocha({ reporter: 'spec' }))
+                            .on('error', $.util.log);
 
     return testResults;
 });
