@@ -8,7 +8,7 @@ var reload = browserSync.reload;
 
 gulp.task('start-browser-sync', () => {
     browserSync.init({
-        proxy: 'localhost:3000', // can be [virtual host, sub-directory, localhost with port]
+        proxy: 'localhost:8080', // can be [virtual host, sub-directory, localhost with port]
     });
 });
 
