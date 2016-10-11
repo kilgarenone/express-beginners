@@ -5,6 +5,7 @@ const credentials = require('./credentials.js');
 const fortune = require('./lib/fortunecookies.js');
 const weather = require('./lib/getWeatherData.js');
 const logger = require('./lib/logger.js');
+const fileUpload = require('./lib/fileUploadLocal.js')();
 // const emailService = require('./lib/email.js')(credentials);
 
 // NPM MODULES
@@ -16,9 +17,10 @@ const domain = require('domain');
 const cluster = require('cluster');
 const path = require('path');
 const bodyParser = require('body-parser');
-const formidable = require('formidable');
 const session = require('express-session');
 const morgan = require('morgan');
+
+
 // const connect = require('connect');
 
 // EXPRESS INITIATION
@@ -35,7 +37,7 @@ const sessionOptions = { resave: false,
 const development = app.get('env') !== 'production';
 
 if (!development) {
-    app.set('trust proxy', 1); // trust first proxy
+    app.enable('trust proxy'); // trust first proxy
     sessionOptions.cookie.secure = true; // serve secure cookies
 }
 
@@ -83,7 +85,7 @@ app.set('view engine', 'handlebars');
 */
 
 // PORT CONFIGURATION
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 8080);
 
 // MIDDLEWARE
 /* [DEPRECATED: Use Promise's error handler to catch async's exception instead]
@@ -225,15 +227,7 @@ app.get('/contest/vacation-photo', (req, res) => {
 });
 
 app.post('/contest/vacation-photo/:year/:month', (req, res) => {
-    const form = new formidable.IncomingForm();
-    form.parse(req, (err, fields, files) => {
-        if (err) return res.redirect(303, '/error');
-        console.log('received fields:');
-        console.log(fields);
-        console.log('received files:');
-        console.log(files);
-        return res.redirect(303, '/thank-you');
-    });
+    fileUpload.upload(req, res);
 });
 
 app.post('/process', (req, res) => {

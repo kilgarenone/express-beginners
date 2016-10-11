@@ -12,3 +12,5 @@ credentials.js
 log/
 # don't commit TypeScript's definition files
 typings/
+# don't commit local file uploads folder
+uploads/
