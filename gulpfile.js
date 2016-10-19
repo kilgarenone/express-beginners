@@ -1,10 +1,19 @@
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
-var spawn = require('child_process').spawn;
+var exec = require('child_process').exec;
 var browserSync = require('browser-sync').create();
 
 var reload = browserSync.reload;
 
+function runCommand(command) {
+    return function (cb) {
+        exec(command, (err, stdout, stderr) => {
+            console.log(stdout);
+            console.log(stderr);
+            cb(err);
+        });
+    };
+}
 
 gulp.task('start-browser-sync', () => {
     browserSync.init({
@@ -24,12 +33,13 @@ gulp.task('scss-to-css', () => {
     return stream;
 });
 
-gulp.task('watch-file-change', ['start-browser-sync'], () => {   // TODO: add task 'scss-to-css' to the array
+gulp.task('watch-file-change', ['start-browser-sync', 'start-server'], () => {   // TODO: add task 'scss-to-css' to the array
     // gulp.watch("scss/*.scss", ['scss-to-css']);
-    spawn('node', ['app.js'], { stdio: 'inherit' });
     gulp.watch('views/**/*.handlebars').on('change', reload);
     gulp.watch('app.js').on('change', reload);
 });
+
+gulp.task('start-server', runCommand('node app.js'));
 
 gulp.task('test', () => {
     const testResults = gulp.src(['test/**/*.js'], { read: false })
