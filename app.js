@@ -1,51 +1,52 @@
-
+var server;
+process.on('uncaughtException', (err) => {
+    console.trace(`Caught exception: ${err.stack}`);
+});
 // CREDENTIALS
-const credentials = require('./credentials.js');
+// const credentials = require('./credentials.js');
 // LIBRARY
 const fortune = require('./lib/fortunecookies.js');
 const weather = require('./lib/getWeatherData.js');
 const logger = require('./lib/logger.js');
-const fileUpload = require('./lib/fileUploadLocal.js')();
+const fileUpload = require('./lib/fileUploadLocal.js');
+const mongoDb = require('./lib/mongoDb.js');
+const sessionMiddleware = require('./lib/session.js');
+// const redisClient = require('./lib/redisClient.js');
 // const emailService = require('./lib/email.js')(credentials);
 
 // NPM MODULES
 // const fs = require('fs');
 const compress = require('compression');
-const http = require('http');
+// const http = require('http');
 const express = require('express');
 const domain = require('domain');
 const cluster = require('cluster');
 const path = require('path');
 const bodyParser = require('body-parser');
-const session = require('express-session');
+// const session = require('express-session');
+// const RedisSessionStore = require('connect-redis')(session);
 const morgan = require('morgan');
-
-
+const handlebarTemplate = require('express-handlebars');
+// const mongoObjectId = require('mongodb').ObjectId;
+// const mongoose = require('mongoose');
 // const connect = require('connect');
+
+// MODELS
+const Shop = require('./models/shopDesc.js');
+const FollowShop = require('./models/followingShop.js');
 
 // EXPRESS INITIATION
 const app = express();
-
-// TEMP VARIABLES
-var server;
-const sessionOptions = { resave: false,
-                         saveUninitialized: false,
-                         cookie: { maxAge: 30 * 60 * 1000 },
-                         secret: credentials.cookieSecret,
-                       };
+// CONNECT TO MongoDB DATABASE
+mongoDb.connect();
+// PORT CONFIGURATION
+app.set('port', process.env.PORT || 8080);
 
 const development = app.get('env') !== 'production';
 
 if (!development) {
     app.enable('trust proxy'); // trust first proxy
-    sessionOptions.cookie.secure = true; // serve secure cookies
 }
-
-logger.debug('Debugging info');
-logger.verbose('Verbose info');
-logger.info('Hello world');
-logger.warn('Warning message');
-logger.error('Error info');
 
 // RESPONSE'S HEADER CONFIGURATION
 // disable sensitive server information
@@ -56,9 +57,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // ENGINE
 // Set up handlebars view engine
-const handlebars = require('express-handlebars').create(
+const handlebars = handlebarTemplate.create(
     {
         defaultLayout: 'main',
+        partialsDir: ['views/partials/'],
         helpers: {
             section(name, options) {
                 if (!this.sections) this.sections = {};
@@ -83,9 +85,6 @@ app.set('view engine', 'handlebars');
 
     emailService.send('2313ersddfdf@gmail.com', 'Hood River!', 'Get \'em while they\'re hot!');
 */
-
-// PORT CONFIGURATION
-app.set('port', process.env.PORT || 8080);
 
 // MIDDLEWARE
 /* [DEPRECATED: Use Promise's error handler to catch async's exception instead]
@@ -143,8 +142,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true,
 }));
+
 // SET UP SESSION/COOKIES
-app.use(session(sessionOptions));
+app.use(sessionMiddleware);
+
+app.use((req, res, next) => {
+    if (!req.session) {
+        return next(new Error('Session initialization Failed')); // handle error
+    }
+    next(); // otherwise continue
+    return true;
+});
 // ENABLE GZIP COMPRESSION
 app.use(compress({ threshold: 0 }));
 // Accepts 'test=1' querystring to enable testing on a specific page
@@ -163,6 +171,13 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use((req, res, next) => {
+    // if there's a flash message, transfer
+    // it to the context, then clear it
+    res.locals.flash = req.session.flash;
+    delete req.session.flash;
+    next();
+});
 // ROUTES
 app.get('/', (req, res) => {
     req.session.damnson = 'WOWOWWWW';
@@ -175,20 +190,69 @@ app.get('/epic-fail', () => {
     });
 });
 
+app.get('/set-currency/:currency', (req, res) => {
+    req.session.currency = req.params.currency;
+    return res.redirect(303, '/shops');
+});
+
+
+app.get('/shops', (req, res) => {
+    // Create dummy data first if needed
+
+    Shop.find({ wifi: false }, (err, shops) => {
+        var currency = req.session.currency || 'USD';
+        var context = {
+            shops: shops.map(shop =>
+                ({
+                    id: shop._id,
+                    name: shop.name,
+                    description: shop.description,
+                })
+            ),
+        };
+
+        switch (currency) {
+            case 'GBP': context.currencyGBP = 'selected'; break;
+            case 'BTC': context.currencyBTC = 'selected'; break;
+            default: context.currencyUSD = 'selected';
+        }
+
+        res.render('shops', context);
+    });
+});
+
+app.post('/followThisShop', (req, res) => {
+    // Update without returning from database
+    FollowShop.update(
+        { email: 'user1@gmail.com' }, // condition to query for specfic doc
+        { $push: { shopIds: req.body.shopId } }, // $push insert new value into the 'ids' array
+        { upsert: true }, //  if a record with the given email address doesn’t exist, it will be created. If a record does exist, it will be updated.
+        (err) => { // callback
+            if (err) {
+                console.error(err.stack);
+                req.session.flash = {
+                    type: 'danger',
+                    intro: 'Ooops!',
+                    message: 'There was an error processing your request.',
+                };
+                return res.redirect(303, '/thank-you');
+            }
+            req.session.flash = {
+                type: 'success',
+                intro: 'Thank you!',
+                message: 'You will be notified when this vacation is in season.',
+            };
+            return res.redirect(303, '/thank-you');
+        }
+    );
+});
+
 
 app.get('/about', (req, res) => {
     res.render('about', {
         fortune: fortune.getFortune(),
         pageTestScript: '/qa/tests-about.js',
     });
-});
-
-app.get('/tours/hood-river', (req, res) => {
-    res.render('tours/hood-river');
-});
-
-app.get('/tours/request-group-rate', (req, res) => {
-    res.render('tours/request-group-rate');
 });
 
 app.get('/jquery-test', (req, res) => {
@@ -227,7 +291,7 @@ app.get('/contest/vacation-photo', (req, res) => {
 });
 
 app.post('/contest/vacation-photo/:year/:month', (req, res) => {
-    fileUpload.upload(req, res);
+    fileUpload.upload([{ name: 'photo', maxCount: 1 }], req, res);
 });
 
 app.post('/process', (req, res) => {
@@ -266,18 +330,9 @@ app.use((err, req, res) => {
 // '; press Ctrl-C to terminate.' );
 // });
 
-function startServer() {
-    server = http.createServer(app).listen(app.get('port'), () => {
-        console.log(`Express started in ${app.get('env')} mode on http://localhost:${app.get('port')}; press Ctrl-C to terminate.`);
-    });
-}
+server = app.listen(app.get('port'), () => {
+    console.log(`Express started in ${app.get('env')} mode on http://localhost:${app.get('port')}; press Ctrl-C to terminate.`);
+});
 
-if (require.main === module) {
-  // application run directly; start app server
-    startServer();
-} else {
-  // application imported as a module via "require": export function
-  // to create server
-    module.exports = startServer;
-}
-
+// exports.httpServer = server;
+// exports.expressApp = app;
