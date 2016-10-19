@@ -1,0 +1,20 @@
+<h1>Shops</h1>
+<p>Currency:
+	<a href="/set-currency/USD" class="currency {{currencyUSD}}">USD</a> |
+	<a href="/set-currency/GBP" class="currency {{currencyGBP}}">GBP</a> |
+	<a href="/set-currency/BTC" class="currency {{currencyBTC}}">BTC</a>
+</p>
+{{#each shops}}
+<h3>{{name}}</h3>
+<p>{{description}}</p>
+<div class="formContainer">
+	<form class="form-horizontal newsletterForm" role="form" action="/followThisShop" method="POST">
+		<input type="hidden" name="shopId" value="{{id}}">
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-4">
+				<button type="submit" class="btn btn-default">Follow</button>
+			</div>
+		</div>
+	</form>
+</div>
+{{/each}}

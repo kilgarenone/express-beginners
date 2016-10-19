@@ -11,6 +11,9 @@
 		"bower_components",
 		"jspm_packages",
 		"tmp",
-		"temp"
+		"temp",
+		"log",
+		"uploads",
+		"typings"
 	]
 }
