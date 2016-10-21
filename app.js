@@ -31,9 +31,6 @@ const handlebarTemplate = require('express-handlebars');
 // const mongoose = require('mongoose');
 // const connect = require('connect');
 
-// MODELS
-const Shop = require('./models/shopDesc.js');
-const FollowShop = require('./models/followingShop.js');
 
 // EXPRESS INITIATION
 const app = express();
@@ -184,6 +181,8 @@ app.get('/', (req, res) => {
     res.render('home');
 });
 
+app.use(require('./controllers'));
+
 app.get('/epic-fail', () => {
     process.nextTick(() => {
         throw new Error('Kaboom!');
@@ -194,59 +193,6 @@ app.get('/set-currency/:currency', (req, res) => {
     req.session.currency = req.params.currency;
     return res.redirect(303, '/shops');
 });
-
-
-app.get('/shops', (req, res) => {
-    // Create dummy data first if needed
-
-    Shop.find({ wifi: false }, (err, shops) => {
-        var currency = req.session.currency || 'USD';
-        var context = {
-            shops: shops.map(shop =>
-                ({
-                    id: shop._id,
-                    name: shop.name,
-                    description: shop.description,
-                })
-            ),
-        };
-
-        switch (currency) {
-            case 'GBP': context.currencyGBP = 'selected'; break;
-            case 'BTC': context.currencyBTC = 'selected'; break;
-            default: context.currencyUSD = 'selected';
-        }
-
-        res.render('shops', context);
-    });
-});
-
-app.post('/followThisShop', (req, res) => {
-    // Update without returning from database
-    FollowShop.update(
-        { email: 'user1@gmail.com' }, // condition to query for specfic doc
-        { $push: { shopIds: req.body.shopId } }, // $push insert new value into the 'ids' array
-        { upsert: true }, //  if a record with the given email address doesn’t exist, it will be created. If a record does exist, it will be updated.
-        (err) => { // callback
-            if (err) {
-                console.error(err.stack);
-                req.session.flash = {
-                    type: 'danger',
-                    intro: 'Ooops!',
-                    message: 'There was an error processing your request.',
-                };
-                return res.redirect(303, '/thank-you');
-            }
-            req.session.flash = {
-                type: 'success',
-                intro: 'Thank you!',
-                message: 'You will be notified when this vacation is in season.',
-            };
-            return res.redirect(303, '/thank-you');
-        }
-    );
-});
-
 
 app.get('/about', (req, res) => {
     res.render('about', {

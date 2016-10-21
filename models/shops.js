@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const logger = require('../lib/logger.js');
 
 // Create mongoose schema with 'Properties Name: Data type' pairs
 const shopSchema = mongoose.Schema({
@@ -16,6 +17,13 @@ shopSchema.methods.getOpeningHour = function () {
 };
 
 // Create a model out of this schema
-const Shop = mongoose.model('Shop', shopSchema);
+const ShopModel = mongoose.model('Shop', shopSchema);
 
-module.exports = Shop;
+exports.getShops = function (conditionObj) {
+    return ShopModel.find(conditionObj).exec()
+                .then(shopsArr => shopsArr)
+                .catch((err) => {
+                    logger.error(`Error in getting Shops: ${err}`);
+                });
+};
+// module.exports = Shop;

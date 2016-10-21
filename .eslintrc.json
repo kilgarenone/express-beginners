@@ -11,6 +11,12 @@
         "sourceType": "module"
     },
     "rules": {
+        "new-cap": [
+            "error",
+            { 
+                "capIsNewExceptions": ["Schema", "Router"] 
+            }
+        ],
         "no-underscore-dangle": [
             "error", 
             { 
