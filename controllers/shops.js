@@ -4,12 +4,12 @@ const ShopModel = require('../models/shops.js');
 const router = express.Router();
 
 
-router.get('/getAll', (req, res) => {
+router.get('/all', (req, res) => {
     // Create dummy data first if needed
 
     var currency = req.session.currency || 'USD';
 
-    ShopModel.getShops({ wifi: false })
+    ShopModel.getShops()
         .then((shops) => {
             var context = {
                 shops: shops.map(shop => ({
