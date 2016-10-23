@@ -1,3 +1,7 @@
+{{#section 'head'}}
+    <!-- we want Google to ignore this page -->
+    <meta name="robots" content="noindex">
+{{/section}}
 <h1>Shops</h1>
 <p>Currency:
 	<a href="/set-currency/USD" class="currency {{currencyUSD}}">USD</a> |
@@ -17,3 +21,10 @@
 	</form>
 </div>
 {{/each}}
+{{#section 'jquery'}}
+<script>
+    $('document').ready(function(){
+        $('h1').html('jQuery Works');
+    });
+</script>
+{{/section}}

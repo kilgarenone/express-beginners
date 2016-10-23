@@ -6,8 +6,15 @@
     "test": "mocha --reporter spec",
     "start": "node app.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kilgarenone/express-scaffold"
+  },
+  "bugs": {
+    "url": "https://github.com/kilgarenone/express-scaffold/issues"
+  },
   "author": "Kheoh Yee Wei",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "app-root-path": "^2.0.1",
     "bluebird": "^3.4.6",
@@ -44,6 +51,11 @@
     "gulp-watch": "^4.3.10",
     "mocha": "^3.0.2"
   },
-  "keywords": [],
-  "description": "Modern Express boostrap for beginners."
+  "keywords": [
+    "express",
+    "boilerplate",
+    "base",
+    "generator"
+  ],
+  "description": "Mostly adequate modern Express app's starting point."
 }
