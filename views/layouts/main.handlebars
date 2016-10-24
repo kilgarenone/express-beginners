@@ -5,13 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Meadowlark Travel</title>
 	<link rel='shortcut icon' href="/img/favicon.ico" type='image/x-icon'/ >
+	<link rel="stylesheet" type="text/css" href="build/css/main.css">
 	{{{sections.head}}}
-	{{#if showTests}}
-		<link rel="stylesheet" href="/vendor/mocha.css">
-	{{/if}}
 </head>
 <body>
-	<header><img src="/email/logo.jpg" alt="Meadowlark Travel Logo"></header>
+	<header><img src="{{static '/email/logo.jpg'}}" alt="Meadowlark Travel Logo"></header>
 	{{#if flash}}
 		<div class="alert alert-dismissible alert-{{flash.type}}">
 			<button type="button" class="close"
@@ -20,20 +18,6 @@
 		</div>
 	{{/if}}
 	{{{body}}}
-	{{#if showTests}}
-		<div id="mocha"></div>
-		<script src="/vendor/mocha.js"></script>
-		<script src="/vendor/chai.js"></script>
-		<script>
-			mocha.ui('tdd');
-			var assert = chai.assert;
-		</script>
-		<script src="/test/tests-global.js"></script>
-		{{#if pageTestScript}}
-			<script src="{{pageTestScript}}"></script>
-		{{/if}}
-		<script>mocha.run();</script>
-	{{/if}}
 	<script src="//code.jquery.com/jquery-2.0.2.min.js"></script>
 	{{{sections.jquery}}}
 </body>

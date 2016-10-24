@@ -1,7 +1,7 @@
-var fortune = require('../lib/fortunecookies.js');
+// var fortune = require('../lib/fortunecookies.js');
 var expect = require('chai').expect;
 var assert = require('chai').assert;
-var Promise = require('bluebird');
+// var Promise = require('bluebird');
 
 describe('Fortune cookie tests', () => {
     it('getFortune() should return a fortune', () => {

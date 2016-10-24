@@ -9,6 +9,7 @@ const logger = require('./lib/logger.js');
 const fileUpload = require('./lib/fileUploadLocal.js');
 const mongoDb = require('./lib/mongoDb.js');
 const sessionMiddleware = require('./lib/session.js');
+const staticAssetsMapper = require('./lib/staticAssetsMapper.js');
 // const redisClient = require('./lib/redisClient.js');
 // const emailService = require('./lib/email.js')(credentials);
 
@@ -56,6 +57,9 @@ const handlebars = handlebarTemplate.create(
                 if (!this.sections) this.sections = {};
                 this.sections[name] = options.fn(this);
                 return null;
+            },
+            static(name) {
+                return staticAssetsMapper.map(name);
             },
         },
     });
