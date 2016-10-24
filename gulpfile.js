@@ -1,19 +1,10 @@
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
-var exec = require('child_process').exec;
+var spawn = require('child_process').spawn;
 var browserSync = require('browser-sync').create();
 
 var reload = browserSync.reload;
 
-function runCommand(command) {
-    return function (cb) {
-        exec(command, (err, stdout, stderr) => {
-            console.log(stdout);
-            console.log(stderr);
-            cb(err);
-        });
-    };
-}
 
 gulp.task('start-browser-sync', () => {
     browserSync.init({
@@ -22,24 +13,26 @@ gulp.task('start-browser-sync', () => {
 });
 
 gulp.task('scss-to-css', () => {
-    const stream = gulp.src('scss/*.scss')
-                        .pipe($.watch('scss/*.scss'))
-                        .pipe($.sourceMap.init())
+    const stream = gulp.src('public/css/**/*.scss')
+                        // .pipe($.watch('public/css/**/*.scss'))
+                        .pipe($.sourcemaps.init())
                         .pipe($.sass())
-                        .pipe($.sourceMap.write())
-                        .pipe(gulp.dest('css'))
+                        .pipe($.sourcemaps.write())
+                        .pipe(gulp.dest('public/build/css'))
                         .pipe(reload({ stream: true })); // prompts a reload after compilation
 
     return stream;
 });
 
-gulp.task('watch-file-change', ['start-browser-sync', 'start-server'], () => {   // TODO: add task 'scss-to-css' to the array
-    // gulp.watch("scss/*.scss", ['scss-to-css']);
+gulp.task('watch-file-change', ['start-browser-sync', 'scss-to-css', 'start-server'], () => {   // TODO: add task 'scss-to-css' to the array
+    gulp.watch('public/css/**/*.scss', ['scss-to-css']);
     gulp.watch('views/**/*.handlebars').on('change', reload);
     gulp.watch('app.js').on('change', reload);
 });
 
-gulp.task('start-server', runCommand('node app.js'));
+gulp.task('start-server', () => {
+    spawn('node', ['app.js'], { stdio: 'inherit' });
+});
 
 gulp.task('test', () => {
     const testResults = gulp.src(['test/**/*.js'], { read: false })
