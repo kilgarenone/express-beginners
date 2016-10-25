@@ -3,6 +3,7 @@ const $ = require('gulp-load-plugins')();
 const spawn = require('child_process').spawn;
 const sassTypes = require('node-sass').types;
 const browserSync = require('browser-sync').create();
+const staticAssetsMapper = require('./lib/staticAssetsMapper.js').map;
 
 const reload = browserSync.reload;
 
@@ -18,7 +19,7 @@ const sassOptions = {
     functions: {
         // static mapping to convert static(path) to mapped static url(path) css format
         'static($url)': function (url) {
-            return sassTypes.String(`url("${  require('./lib/staticAssetsMapper.js').map(url.getValue())  }")`);
+            return sassTypes.String(`url("${staticAssetsMapper(url.getValue())}")`);
         },
     },
 };
