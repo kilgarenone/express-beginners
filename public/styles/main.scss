@@ -3,3 +3,8 @@ $primaryColor: #eeddcc;
 body {
     background-color: $primaryColor;
 }
+
+.currency.selected {
+    font-size: 30px;
+    color: green;
+}
