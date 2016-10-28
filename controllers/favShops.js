@@ -1,9 +1,10 @@
 const express = require('express');
 const FavShopsModel = require('../models/favShops.js');
+const csrfProtection = require('csurf')();
 
 const router = express.Router();
 
-router.post('/favThisShop/:id', (req, res) => {
+router.post('/favThisShop/:id', csrfProtection, (req, res) => {
     FavShopsModel.favThisShop(req.params.id)
         .then(() => {
             req.session.flash = {
