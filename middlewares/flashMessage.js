@@ -1,12 +1,12 @@
 const express = require('express');
+const flash = require('connect-flash');
 
 const router = express.Router();
 
+router.use(flash());
+
 router.use((req, res, next) => {
-    // if there's a flash message, transfer
-    // it to the context, then clear it
-    res.locals.flash = req.session.flash;
-    delete req.session.flash;
+    res.locals.flash = req.flash('message');
     next();
 });
 

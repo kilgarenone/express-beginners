@@ -26,4 +26,3 @@ exports.getShops = function (conditionObj) {
                     logger.error(`Error in getting Shops: ${err}`);
                 });
 };
-// module.exports = Shop;

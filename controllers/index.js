@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.use('/shops', require('./shops'));
 router.use('/fav', require('./favShops'));
-
+router.use('/auth', require('./signup'));
 // error handler
 router.use((err, req, res, next) => {
     if (err.code !== 'EBADCSRFTOKEN') return next(err);
