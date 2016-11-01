@@ -6,7 +6,7 @@ node_modules
 .vscode
 
 # don't commit secret credentials file that contains passwords and API key
-credentials.js
+config.js
 
 # don't commit log files
 log/

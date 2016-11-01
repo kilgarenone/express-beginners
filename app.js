@@ -1,8 +1,8 @@
 process.on('uncaughtException', (err) => {
     console.trace(`Caught exception: ${err.stack}`);
 });
-// CREDENTIALS
-// const credentials = require('./credentials.js');
+// ENVIRONMENT-DEPENDENT CONFIG
+// const config = require('./config.js')(process.env.NODE_ENV);
 // LIBRARY
 const weather = require('./lib/getWeatherData.js');
 const logger = require('./lib/logger.js');
@@ -10,6 +10,7 @@ const fileUpload = require('./lib/fileUploadLocal.js');
 const mongoDb = require('./lib/mongoDb.js');
 const sessionMiddleware = require('./lib/session.js');
 const staticAssetsMapper = require('./lib/staticAssetsMapper.js');
+const auth = require('./lib/auth.js');
 // const redisClient = require('./lib/redisClient.js');
 // const emailService = require('./lib/email.js')(credentials);
 
@@ -46,6 +47,8 @@ app.disable('x-powered-by');
 // STATIC RESOURCES
 app.use(express.static(path.join(__dirname, 'public')));
 
+// USER AUTHENICATION
+auth.init();
 // ENGINE
 // Set up handlebars view engine
 const handlebars = handlebarTemplate.create(
@@ -84,7 +87,7 @@ app.set('view engine', 'handlebars');
 // Logger
 if (development) {
     // compact, colorful dev logging
-    app.use(morgan('tiny', { stream: logger.stream }));
+    app.use(morgan('dev', { stream: logger.stream }));
 }
 
 // Serve the fav icon
