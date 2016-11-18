@@ -1,4 +1,8 @@
 // UNDERSTANDING HOW MIDDLEWARE WORKS
+/*  Step 1: type 'node learnMiddlewareFlow.js'.
+    Step 2: Go to 'localhost:3000/a' route to inspect its middleware flow behaviour.
+            Do the same thing for route '/b', and '/c'.
+*/
 
 var app = require('express')();
 app.use(function(req, res, next) {

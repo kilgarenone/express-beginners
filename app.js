@@ -1,30 +1,38 @@
+// Capture uncaught exception in other files prior to running this file
 process.on('uncaughtException', (err) => {
     console.trace(`Caught exception: ${err.stack}`);
 });
-// ENVIRONMENT-DEPENDENT CONFIG
-// const config = require('./config.js')(process.env.NODE_ENV);
+
 // LIBRARY
-const weather = require('./lib/getWeatherData.js');
+// For logging purposes
 const logger = require('./lib/logger.js');
+// Upload files to local disk
 const fileUpload = require('./lib/fileUploadLocal.js');
+// Get MongoDB methods that have been exposed
 const mongoDb = require('./lib/mongoDb.js');
+// To enable session with redis-store enabled
 const sessionMiddleware = require('./lib/session.js');
+// For mapping urls to static path
 const staticAssetsMapper = require('./lib/staticAssetsMapper.js');
+// To init social media authentication with facebook
 const auth = require('./lib/auth.js');
-// const redisClient = require('./lib/redisClient.js');
-// const emailService = require('./lib/email.js')(credentials);
+/*
+    // Uncomment to enable email service
+    const emailService = require('./lib/email.js')(credentials);
+*/
+
 
 // NPM MODULES
-// const fs = require('fs');
+// Enable gzip compression
 const compress = require('compression');
-// const http = require('http');
 const express = require('express');
 const path = require('path');
+// Parse request body data into JSON obj. Availabe under the req.body property.
 const bodyParser = require('body-parser');
+// Logging library
 const morgan = require('morgan');
+// Handlebar templates
 const handlebarTemplate = require('express-handlebars');
-// const mongoObjectId = require('mongodb').ObjectId;
-// const connect = require('connect');
 
 
 // EXPRESS INITIATION
@@ -33,11 +41,12 @@ const app = express();
 mongoDb.connect('mode_production');
 // PORT CONFIGURATION
 app.set('port', process.env.PORT || 8080);
-
+// Check if app is in development or production mode
 const development = app.get('env') !== 'production';
 
+// trust first proxy if in production
 if (!development) {
-    app.enable('trust proxy'); // trust first proxy
+    app.enable('trust proxy');
 }
 
 // RESPONSE'S HEADER CONFIGURATION
@@ -49,12 +58,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // USER AUTHENICATION
 auth.init();
-// ENGINE
+
+// TEMPLATING ENGINE
 // Set up handlebars view engine
 const handlebars = handlebarTemplate.create(
     {
         defaultLayout: 'main',
-        partialsDir: ['views/partials/'],
+        partialsDir: ['views/partials/'], // dir for your partial templates
         helpers: {
             section(name, options) {
                 if (!this.sections) this.sections = {};
@@ -69,10 +79,13 @@ const handlebars = handlebarTemplate.create(
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-// app.set('view cache', true); //Enable template caching for development
-
-// SEND EMAIL AND EMAIL ERROR TO NOTIFIY ONCE OCCURED
 /*
+    // Uncomment to enable template caching for development
+    app.set('view cache', true);
+*/
+
+/*
+    // SEND EMAIL AND EMAIL ERROR TO NOTIFIY ONCE OCCURED
     try {
         // do something iffy here....
     } catch(ex) {
@@ -83,8 +96,9 @@ app.set('view engine', 'handlebars');
     emailService.send('2313ersddfdf@gmail.com', 'Hood River!', 'Get \'em while they\'re hot!');
 */
 
+
 // MIDDLEWARE
-// Logger
+// Stream logging through Winston
 if (development) {
     // compact, colorful dev logging
     app.use(morgan('dev', { stream: logger.stream }));
@@ -92,44 +106,35 @@ if (development) {
 
 // Serve the fav icon
 app.use(require('serve-favicon')(path.join(__dirname, 'public', 'img', 'favicon.ico')));
-// Parse request body data into JSON obj
+// Create application/json parser
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended: true,
-}));
+// Create application/x-www-form-urlencoded parser
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // SET UP SESSION/COOKIES
 app.use(sessionMiddleware);
-
+// Handle session init error
 app.use((req, res, next) => {
     if (!req.session) {
-        return next(new Error('Session initialization Failed')); // handle error
+        return next(new Error('Session initialization Failed'));
     }
-    next(); // otherwise continue
+    // otherwise continue
+    next();
     return true;
 });
 // ENABLE GZIP COMPRESSION
 app.use(compress({ threshold: 0 }));
-// Load all middlewares
+// LOAD ALL OTHER MIDDLEWARES IN MIDDLEWARES/INDEX.JS
 app.use(require('./middlewares'));
-// ROUTES
-app.get('/', (req, res) => {
-    res.locals.partials.weatherData = weather.getWeatherData();
-    req.session.damnson = 'WOWOWWWW';
-    res.render('home');
-});
 
+// LOAD ALL THE CONTROLLERS DEFINED IN CONTROLLERS/INDEX.JS
 app.use(require('./controllers'));
 
-app.get('/set-currency/:currency', (req, res) => {
-    req.session.currency = req.params.currency;
-    return res.redirect(303, '/shops');
-});
-
+// DEMONSTRATE CLIENT-SIDE RENDERING WITH HANDLEBAR
 app.get('/nursery-rhyme', (req, res) => {
     res.render('nursery-rhyme');
 });
-
+// Only send JSON data back to client's templates
 app.get('/data/nursery-rhyme', (req, res) => {
     res.json({
         animal: 'squirrel',
@@ -140,41 +145,22 @@ app.get('/data/nursery-rhyme', (req, res) => {
 });
 
 app.get('/thank-you', (req, res) => {
+    // This is how to access a session key, in this case, called 'firstSession'
+    logger.info(req.session.firstSession);
     res.render('thank-you');
 });
 
-app.get('/newsletter', (req, res) => {
-    // we will learn about CSRF later...for now, we just
-    // provide a dummy value
-    res.render('newsletter', { csrf: 'CSRF token goes here' });
-});
-
-app.get('/contest/vacation-photo', (req, res) => {
+// DEMONSTRATE FILE UPLOADS TO LOCAL DISK
+app.get('/vacation-photo', (req, res) => {
     const now = new Date();
-    res.render('contest/vacation-photo', {
+    res.render('vacation-photo', {
         year: now.getFullYear(),
         month: now.getMonth(),
     });
 });
-
-app.post('/contest/vacation-photo/:year/:month', (req, res) => {
+app.post('/vacation-photo/:year/:month', (req, res) => {
     fileUpload.upload([{ name: 'photo', maxCount: 1 }], req, res);
 });
-
-app.post('/process', (req, res) => {
-    console.log(`Form (from querystring): ${req.query.form}`);
-    console.log(`CSRF token (from hidden form field): ${req.body.csrf}`);
-    console.log(`Name (from visible form field): ${req.body.name}`);
-    console.log(`Email (from visible form field): ${req.body.email}`);
-    if (req.xhr || req.accepts('json,html') === 'json') {
-    // if there were an error, we would send { error: 'error description' }
-        res.send({ success: true });
-    } else {
-    // if there were an error, we would redirect to an error page
-        res.redirect(303, '/thank-you');
-    }
-});
-
 
 // ERROR HANDLING
 // Middleware for custom 404 catch-all handler
@@ -191,15 +177,6 @@ app.use((err, req, res) => {
 });
 
 // SERVER CONFIGURATION
-// app.listen(app.get('port'), function(){
-// console.log( 'Express started in ' + app.get('env') +
-// ' mode on http://localhost:' + app.get('port') +
-// '; press Ctrl-C to terminate.' );
-// });
-
 app.listen(app.get('port'), () => {
     console.log(`Express started in ${app.get('env')} mode on http://localhost:${app.get('port')}; press Ctrl-C to terminate.`);
 });
-
-// exports.httpServer = server;
-// exports.expressApp = app;

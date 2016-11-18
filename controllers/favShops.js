@@ -1,8 +1,7 @@
-const express = require('express');
+const router = require('express').Router();
 const FavShopsModel = require('../models/favShops.js');
 const csrfProtection = require('csurf')();
 
-const router = express.Router();
 
 router.post('/favThisShop/:id', csrfProtection, (req, res) => {
     FavShopsModel.favThisShop(req.params.id)
