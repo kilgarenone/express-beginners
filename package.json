@@ -16,7 +16,6 @@
   "author": "Kheoh Yee Wei",
   "license": "MIT",
   "dependencies": {
-    "app-root-path": "^2.0.1",
     "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
     "compression": "^1.6.2",

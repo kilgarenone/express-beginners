@@ -4,6 +4,8 @@ process.on('uncaughtException', (err) => {
 });
 
 // LIBRARY
+// CONFIGS
+const config = require('./config.js');
 // For logging purposes
 const logger = require('./lib/logger.js');
 // Upload files to local disk
@@ -54,7 +56,7 @@ if (!development) {
 app.disable('x-powered-by');
 
 // STATIC RESOURCES
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(config.staticDir));
 
 // USER AUTHENICATION
 auth.init();
