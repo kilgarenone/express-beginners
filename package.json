@@ -8,10 +8,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/kilgarenone/express-scaffold"
+    "url": "https://github.com/kilgarenone/express-wired"
   },
   "bugs": {
-    "url": "https://github.com/kilgarenone/express-scaffold/issues"
+    "url": "https://github.com/kilgarenone/express-wired/issues"
   },
   "author": "Kheoh Yee Wei",
   "license": "MIT",
@@ -28,7 +28,6 @@
     "express": "^4.14.0",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.14.1",
-    "mongodb": "^2.2.10",
     "mongoose": "^4.6.3",
     "morgan": "^1.7.0",
     "multer": "^1.2.0",
@@ -60,7 +59,8 @@
     "express",
     "boilerplate",
     "base",
-    "generator"
+    "generator",
+    "scaffold"
   ],
   "description": "Mostly adequate modern Express app's starting point."
 }

@@ -1,6 +1,4 @@
-const express = require('express');
-
-const router = express.Router();
+const router = require('express').Router();
 
 // Middleware to inject data into res.locals.partials
 router.use((req, res, next) => {
@@ -9,6 +7,5 @@ router.use((req, res, next) => {
     }
     next();
 });
-
 
 module.exports = router;

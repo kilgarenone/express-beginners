@@ -1,3 +1,17 @@
+/*
+    A view model separates the logic and transformations of data from the model
+    or controller, keeping both of them clean.
+
+    It transforms data as desired from the corresponding model to be rendered
+    in the corresponding view.
+
+    In this case, the 'getAllShops' function is called in the route '/all' in
+    /controllers/shops.js.
+
+    'getAllShops' function in turn brings in and transform data by calling 'getShops' api from /models/shops.js.
+
+    More info: https://addyosmani.com/blog/understanding-mvvm-a-guide-for-javascript-developers/
+*/
 const ShopModel = require('../models/shops.js');
 
 

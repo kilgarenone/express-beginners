@@ -1,7 +1,10 @@
-const express = require('express');
-const flash = require('connect-flash');
+/*
+    Using the connect-flash library to add flash messages on a particular page
 
-const router = express.Router();
+    https://github.com/jaredhanson/connect-flash
+*/
+const router = require('express').Router();
+const flash = require('connect-flash');
 
 router.use(flash());
 

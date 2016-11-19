@@ -1,3 +1,5 @@
+// Type 'node app_cluster' to run app in the cluster mode
+
 const cluster = require('cluster');
 const cpus = require('os').cpus();
 
