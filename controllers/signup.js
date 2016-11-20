@@ -1,8 +1,8 @@
 const router = require('express').Router();
 const passport = require('passport');
-const config = require('../config.js');
+const configs = require('../configs.js');
 
-const authFB = config.auth.facebook;
+const authFB = configs.auth.facebook;
 
 /*
     Redirect the user to Facebook for authentication.  When complete,
