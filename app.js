@@ -28,7 +28,6 @@ const auth = require('./lib/auth.js');
 // Enable gzip compression
 const compress = require('compression');
 const express = require('express');
-const path = require('path');
 // Parse request body data into JSON obj. Availabe under the req.body property.
 const bodyParser = require('body-parser');
 // Logging library

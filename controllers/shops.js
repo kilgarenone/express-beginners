@@ -8,7 +8,7 @@ const ensureAuthenticated = require('../lib/auth.js').ensureAuthenticated;
     running '/all' router handler.
 
     See: http://expressjs.com/en/4x/api.html#app.METHOD
-    
+
 */
 router.get('/all', ensureAuthenticated, csrfProtection, (req, res) => {
     // Create dummy data first if needed
