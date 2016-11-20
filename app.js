@@ -5,7 +5,7 @@ process.on('uncaughtException', (err) => {
 
 // LIBRARY
 // CONFIGS
-const config = require('./config.js');
+const configs = require('./configs.js');
 // For logging purposes
 const logger = require('./lib/logger.js');
 // Upload files to local disk
@@ -44,10 +44,10 @@ mongoDb.connect('mode_production');
 // PORT CONFIGURATION
 app.set('port', process.env.PORT || 8080);
 // Check if app is in development or production mode
-const development = app.get('env') !== 'production';
+const production = (app.get('env') === 'production');
 
 // trust first proxy if in production
-if (!development) {
+if (production) {
     app.enable('trust proxy');
 }
 
@@ -56,7 +56,7 @@ if (!development) {
 app.disable('x-powered-by');
 
 // STATIC RESOURCES
-app.use(express.static(config.staticDir));
+app.use(express.static(configs.staticDir));
 
 // USER AUTHENICATION
 auth.init();
@@ -81,10 +81,9 @@ const handlebars = handlebarTemplate.create(
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-/*
-    // Uncomment to enable template caching for development
-    app.set('view cache', true);
-*/
+// Uncomment to enable template caching for development
+app.set('view cache', production);
+
 
 /*
     // SEND EMAIL AND EMAIL ERROR TO NOTIFIY ONCE OCCURED
@@ -101,13 +100,13 @@ app.set('view engine', 'handlebars');
 
 // MIDDLEWARE
 // Stream logging through Winston
-if (development) {
+if (!production) {
     // compact, colorful dev logging
     app.use(morgan('dev', { stream: logger.stream }));
 }
 
 // Serve the fav icon
-app.use(require('serve-favicon')(path.join(__dirname, 'public', 'img', 'favicon.ico')));
+app.use(require('serve-favicon')(configs.favIconPath));
 // Create application/json parser
 app.use(bodyParser.json());
 // Create application/x-www-form-urlencoded parser
