@@ -1,13 +1,13 @@
 # ignore packages installed by npm
 node_modules
+# don't ignore our local modules folder which contains shared libraries
+!app/node_modules
 # put any other files you don't want to check in here,
 # such as .DS_Store (OSX), *.bak, etc.
 .DS_Store
 .vscode
-
 # don't commit secret credentials file that contains passwords and API key
-configs.js
-
+# configs.js
 # don't commit log files
 log/
 # don't commit TypeScript's definition files

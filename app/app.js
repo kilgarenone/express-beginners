@@ -3,28 +3,32 @@ process.on('uncaughtException', (err) => {
     console.trace(`Caught exception: ${err.stack}`);
 });
 
-// LIBRARY
-// CONFIGS
-const configs = require('./configs.js');
+// LOCAL MODULES
+/*
+    See: http://stackoverflow.com/a/24461606/73323 to understand the
+    rationale of structures of /app and /app / node_modules
+*/
+// VARIOUS CONFIGS
+const configs = require('configs.js');
 // For logging purposes
-const logger = require('./lib/logger.js');
+const logger = require('logger.js');
 // Upload files to local disk
-const fileUpload = require('./lib/fileUploadLocal.js');
+const fileUpload = require('fileUploadLocal.js');
 // Get MongoDB methods that have been exposed
-const mongoDb = require('./lib/mongoDb.js');
+const mongoDb = require('mongoDb.js');
 // To enable session with redis-store enabled
-const sessionMiddleware = require('./lib/session.js');
+const sessionMiddleware = require('session.js');
 // For mapping urls to static path
-const staticAssetsMapper = require('./lib/staticAssetsMapper.js');
+const staticAssetsMapper = require('staticAssetsMapper.js');
 // To init social media authentication with facebook
-const auth = require('./lib/auth.js');
+const auth = require('auth.js');
 /*
     // Uncomment to enable email service
-    const emailService = require('./lib/email.js')(credentials);
+    const emailService = require('email.js')(credentials);
 */
 
 
-// NPM MODULES
+// THIRD-PARTY MODULES
 // Enable gzip compression
 const compress = require('compression');
 const express = require('express');
@@ -65,7 +69,8 @@ auth.init();
 const handlebars = handlebarTemplate.create(
     {
         defaultLayout: 'main',
-        partialsDir: ['views/partials/'], // dir for your partial templates
+        layoutsDir: configs.layoutsDir,
+        partialsDir: configs.partialsDir, // dir for your partial templates
         helpers: {
             section(name, options) {
                 if (!this.sections) this.sections = {};
@@ -79,6 +84,7 @@ const handlebars = handlebarTemplate.create(
     });
 
 app.engine('handlebars', handlebars.engine);
+app.set('views', configs.viewsDir);
 app.set('view engine', 'handlebars');
 // Uncomment to enable template caching for development
 app.set('view cache', production);

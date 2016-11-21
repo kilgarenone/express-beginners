@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const logger = require('../lib/logger.js');
+const logger = require('logger.js');
 
 const userSchema = mongoose.Schema({
     authId: String,

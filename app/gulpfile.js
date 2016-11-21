@@ -3,16 +3,12 @@ const $ = require('gulp-load-plugins')();
 const spawn = require('child_process').spawn;
 const browserSync = require('browser-sync').create();
 const sassTypes = require('node-sass').types;
-const staticAssetsMapper = require('./lib/staticAssetsMapper.js').map;
+const staticAssetsMapper = require('staticAssetsMapper.js').map;
+const configs = require('configs');
 
 const reload = browserSync.reload;
 
-const cssScssDirConfigs = {
-    publicBuildCssDir: './public/build/css',
-    publicBuildCssMapsDir: './sourcemaps', // path is relative to publicBuildCssDir
-    publicSassDir: './public/styles/**/*.scss',
-};
-
+const cssScssDirConfigs = configs.cssScssDirConfigs;
 // Pass in options just like you would for the 'node-sass' package
 // https://github.com/sass/node-sass#options
 const sassOptions = {
@@ -64,7 +60,7 @@ gulp.task('start-server', () => {
 
 // 'gulp test' to run all tests
 gulp.task('test', () => {
-    const testResults = gulp.src(['test/**/*.js'], { read: false })
+    const testResults = gulp.src(['**/test/**/*.js'], { read: false })
                             .pipe($.mocha({ reporter: 'spec' }))
                             .on('error', $.util.log);
 
@@ -89,8 +85,8 @@ gulp.task('production', [], () => {
 */
 gulp.task('watch-file-change', ['start-browser-sync', 'scss-to-css', 'start-server'], () => {
     gulp.watch(cssScssDirConfigs.publicSassDir, ['scss-to-css']);
-    gulp.watch('views/**/*.handlebars').on('change', reload);
-    gulp.watch('app.js').on('change', reload);
+    gulp.watch('**/views/**/*.handlebars').on('change', reload);
+    gulp.watch('**/app.js').on('change', reload);
 });
 
 // Running 'gulp' in command will start the 'watch-file-change' task

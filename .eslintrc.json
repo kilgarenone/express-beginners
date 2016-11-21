@@ -29,12 +29,7 @@
                 "allow": ["_id"] 
             }
         ],
-        "import/no-extraneous-dependencies": [
-            "error", 
-            { 
-              "devDependencies": [ "**/gulpfile.js", "**/test/**/*.js" ]
-            }
-        ],
+        "import/no-extraneous-dependencies": 0,
         "no-var": 0,
         "no-unused-vars": [
             "error", 

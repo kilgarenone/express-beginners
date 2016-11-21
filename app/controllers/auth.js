@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const passport = require('passport');
-const configs = require('../configs.js');
+const configs = require('configs');
 
 const authFB = configs.auth.facebook;
 
