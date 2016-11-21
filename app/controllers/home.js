@@ -1,6 +1,6 @@
 const router = require('express').Router();
 // Get random weather data for demo in /partials/weather.handlebars template later
-const weather = require('../lib/getWeatherData.js');
+const weather = require('getWeatherData.js');
 
 router.get('/', (req, res) => {
     /*

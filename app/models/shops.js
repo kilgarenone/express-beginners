@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const logger = require('../lib/logger.js');
+const logger = require('logger.js');
 
 // Create mongoose schema with 'Properties Name: Data type' pairs
 const shopSchema = mongoose.Schema({

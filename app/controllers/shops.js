@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const shopsViewModel = require('../viewModels/shops.js');
 const csrfProtection = require('csurf')();
-const ensureAuthenticated = require('../lib/auth.js').ensureAuthenticated;
+const ensureAuthenticated = require('auth.js').ensureAuthenticated;
 
 /*
     Run both functions 'ensureAuthenticated' follows by 'csrfProtection' BEFORE
@@ -23,7 +23,7 @@ router.get('/all', ensureAuthenticated, csrfProtection, (req, res) => {
 router.get('/set-currency/:currency', (req, res) => {
     // Session will persist even after shut and start app again.
     req.session.currency = req.params.currency;
-    return res.redirect(303, '/shops');
+    return res.redirect(303, '/shops/all');
 });
 
 module.exports = router;
