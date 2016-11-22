@@ -1,3 +1,20 @@
+/*
+    To start authenticating with Facebook via passport.js,
+    you need to do a couple of things:
+
+    1)  Login to developers.facebook.com.
+    2)  Create a new app.
+    3)  Note down the app's APP_ID and APP_SECRET in the app's dashboard.
+        These two pieces of information will go into the configs.js's corresponding fields.
+    4)  Go to 'App Review' of the app, and toggle 'Make <app_name> public' to YES.
+    5)  In the 'PRODUCTS' section on the left sidebar, click '+Add Product' to add 'Facebook Login' on the next page.
+    6)  Go to the 'settings' of the 'Facebook Login'.Under the field of 'Valid OAuth redirect URIs',
+        provides your passport's facebook callback url, in this case, 'http://localhost:8080/auth/facebook/callback'.
+
+        And that's it! It's over! BYE!
+*/
+
+
 const router = require('express').Router();
 const passport = require('passport');
 const configs = require('configs');
