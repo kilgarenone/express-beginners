@@ -22,6 +22,8 @@ const sessionMiddleware = require('session.js');
 const staticAssetsMapper = require('staticAssetsMapper.js');
 // To init social media authentication with facebook
 const auth = require('auth.js');
+// Get millisecond helper function
+const millisec = require('millisecond');
 /*
     // Uncomment to enable email service
     const emailService = require('email.js')(credentials);
@@ -38,10 +40,11 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 // Handlebar templates
 const handlebarTemplate = require('express-handlebars');
-
+// Helps you secure your Express apps by setting various HTTP headers
+const helmet = require('helmet');
 
 // EXPRESS INITIATION
-const app = express();
+const app = module.exports = express();
 // CONNECT TO MongoDB DATABASE
 mongoDb.connect('mode_production');
 // PORT CONFIGURATION
@@ -49,17 +52,17 @@ app.set('port', process.env.PORT || 8080);
 // Check if app is in development or production mode
 const production = (app.get('env') === 'production');
 
-// trust first proxy if in production
+// Enable If behind nginx, proxy, or a load balancer (e.g. Heroku, Nodejitsu)
 if (production) {
     app.enable('trust proxy');
 }
 
 // RESPONSE'S HEADER CONFIGURATION
-// disable sensitive server information
-app.disable('x-powered-by');
+// Apply default Helmet's middlewares for various HTTP security headers
+app.use(helmet());
 
 // STATIC RESOURCES
-app.use(express.static(configs.staticDir));
+app.use(express.static(configs.staticDir, { maxAge: millisec.week() }));
 
 // USER AUTHENICATION
 auth.init();
@@ -104,12 +107,14 @@ app.set('view cache', production);
 
 
 // MIDDLEWARE
-// Stream logging through Winston
+// Stream console logging through Winston
 if (!production) {
     // compact, colorful dev logging
     app.use(morgan('dev', { stream: logger.stream }));
 }
 
+// COMPRESS RESPONSE DATA WITH GZIP / DEFLATE.
+app.use(compress({ threshold: 0 }));
 // Serve the fav icon
 app.use(require('serve-favicon')(configs.favIconPath));
 // Create application/json parser
@@ -128,8 +133,6 @@ app.use((req, res, next) => {
     next();
     return true;
 });
-// ENABLE GZIP COMPRESSION
-app.use(compress({ threshold: 0 }));
 // LOAD ALL OTHER MIDDLEWARES IN MIDDLEWARES/INDEX.JS
 app.use(require('./middlewares'));
 
