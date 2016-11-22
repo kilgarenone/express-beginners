@@ -1,5 +1,5 @@
 const gulp = require('gulp');
-const $ = require('gulp-load-plugins')();
+const $ = require('gulp-load-plugins')({ lazy: true }); // plugins should be lazy loaded on demand
 const spawn = require('child_process').spawn;
 const browserSync = require('browser-sync').create();
 const sassTypes = require('node-sass').types;

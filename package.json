@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/kilgarenone/express-wired"
+    "url": "https://github.com/kilgarenone/express-wired.git"
   },
   "bugs": {
     "url": "https://github.com/kilgarenone/express-wired/issues"
@@ -27,6 +27,7 @@
     "express": "^4.14.0",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.14.1",
+    "helmet": "^3.1.0",
     "mongoose": "^4.6.3",
     "morgan": "^1.7.0",
     "multer": "^1.2.0",
@@ -59,7 +60,10 @@
     "boilerplate",
     "base",
     "generator",
-    "scaffold"
+    "scaffold",
+    "skeleton",
+    "node",
+    "framework"
   ],
   "description": "Mostly adequate modern Express app's starting point."
 }
