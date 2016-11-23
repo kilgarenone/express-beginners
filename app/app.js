@@ -62,8 +62,8 @@ if (production) {
 app.use(helmet());
 
 // STATIC RESOURCES
-app.use(express.static(configs.staticDir, { maxAge: millisec.week() }));
-
+app.use(express.static(configs.staticDirPublic, { maxAge: millisec.week() }));
+app.use(express.static(configs.staticDirBuild, { maxAge: millisec.week() }));
 // USER AUTHENICATION
 auth.init();
 
