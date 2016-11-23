@@ -1,5 +1,7 @@
+const fs = require('fs');
 const gulp = require('gulp');
 const $ = require('gulp-load-plugins')({ lazy: true }); // plugins should be lazy loaded on demand
+const revReplace = require('gulp-rev-replace');
 const spawn = require('child_process').spawn;
 const browserSync = require('browser-sync').create();
 const sassTypes = require('node-sass').types;
@@ -42,16 +44,28 @@ gulp.task('start-browser-sync', () => {
 
 // Compile SCSS to CSS
 gulp.task('scss-to-css', () => {
-    const stream = gulp.src(cssScssDirConfigs.publicSassDir) // Get SCSS files
+    const stream = gulp.src(cssScssDirConfigs.publicSassDir, { base: './assets' }) // Get SCSS files
                         .pipe($.sourcemaps.init()) // Build sourcemaps for easy CSS debugging on front-end
                         .pipe($.sass(sassOptions).on('error', $.sass.logError)) // Gulp process is by default killed when there's an error parsing sass. The error handler prevents that and tells us where went wrong too
                         .pipe($.autoprefixer(autoprefixerOptions)) // Add prefixes to some modern CSS properties for better browser support
+                        // .pipe($.rev()) // Fingerprint css files to cache bustings
                         .pipe($.sourcemaps.write(cssScssDirConfigs.publicBuildCssMapsDir)) // Destination for built sourcemaps
-                        .pipe(gulp.dest(cssScssDirConfigs.publicBuildCssDir)) // Destination to for compiled CSS
+                        .pipe(gulp.dest(cssScssDirConfigs.publicBuildCssDir)) // Destination for compiled CSS files
+                        // .pipe($.rev.manifest({ merge: true })) // Produce freshly revisioned/fingerprinted assets in a manifest file
+                        .pipe(gulp.dest('./')) // Destination for asset manifest file, 'root' in this case.
                         .pipe(reload({ stream: true })); // Prompts a reload after compilation
 
     return stream;
 });
+
+// gulp.task('revReplace', ['scss-to-css'], () => {
+//      // read in our manifest file
+//     var manifest = JSON.parse(fs.readFileSync('./rev-manifest', 'utf8'));
+
+//     return gulp.src('./views/**/*.handlebars')
+//         .pipe(revReplace({ revManifest }))
+//         .pipe(gulp.dest(opt.distFolder));
+// });
 
 // Run 'node app.js'
 gulp.task('start-server', () => {

@@ -1,0 +1,10 @@
+body {
+  background-color: red;
+}
+
+.currency.selected {
+  font-size: 30px;
+  color: green;
+}
+
+/*# sourceMappingURL=../sourcemaps/css/main.css.map */
