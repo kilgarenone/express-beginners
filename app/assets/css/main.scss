@@ -1,7 +1,7 @@
 $primaryColor: #eeddcc;
 
 body {
-    background-color: red;
+    background-color: $primaryColor;
 }
 
 .currency.selected {

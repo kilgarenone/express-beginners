@@ -1,4 +1,3 @@
-const fs = require('fs');
 const gulp = require('gulp');
 const $ = require('gulp-load-plugins')({ lazy: true }); // plugins should be lazy loaded on demand
 const revReplace = require('gulp-rev-replace');
@@ -48,24 +47,33 @@ gulp.task('scss-to-css', () => {
                         .pipe($.sourcemaps.init()) // Build sourcemaps for easy CSS debugging on front-end
                         .pipe($.sass(sassOptions).on('error', $.sass.logError)) // Gulp process is by default killed when there's an error parsing sass. The error handler prevents that and tells us where went wrong too
                         .pipe($.autoprefixer(autoprefixerOptions)) // Add prefixes to some modern CSS properties for better browser support
-                        // .pipe($.rev()) // Fingerprint css files to cache bustings
+                        .pipe($.rev()) // Fingerprint css files to cache bustings
                         .pipe($.sourcemaps.write(cssScssDirConfigs.publicBuildCssMapsDir)) // Destination for built sourcemaps
                         .pipe(gulp.dest(cssScssDirConfigs.publicBuildCssDir)) // Destination for compiled CSS files
-                        // .pipe($.rev.manifest({ merge: true })) // Produce freshly revisioned/fingerprinted assets in a manifest file
+                        .pipe($.rev.manifest({ merge: true })) // Produce freshly revisioned/fingerprinted assets in a manifest file
                         .pipe(gulp.dest('./')) // Destination for asset manifest file, 'root' in this case.
                         .pipe(reload({ stream: true })); // Prompts a reload after compilation
 
     return stream;
 });
 
-// gulp.task('revReplace', ['scss-to-css'], () => {
-//      // read in our manifest file
-//     var manifest = JSON.parse(fs.readFileSync('./rev-manifest', 'utf8'));
+/*
+    Replace referenced file name to its freshly rev'ed version
+    NOTE: Ideally, you might want to pipe to new dest folder instead of replacing original files here.
 
-//     return gulp.src('./views/**/*.handlebars')
-//         .pipe(revReplace({ revManifest }))
-//         .pipe(gulp.dest(opt.distFolder));
-// });
+    See: https://github.com/jamesknelson/gulp-rev-replace#usage
+*/
+gulp.task('revReplace', ['scss-to-css'], () => { // finish 'scss-to-css' task before starting this task
+     // read in our manifest file
+    var manifest = gulp.src('./rev-manifest.json');
+
+    return gulp.src('views/**/main.handlebars')  // get our file that has the referenced filename
+        .pipe(revReplace({
+            manifest,
+            replaceInExtensions: ['.handlebars'], // 'gulp-rev-replace' doesn't replace .handlebars files(but .hbs is ok) by default
+        }))
+        .pipe(gulp.dest('views')); // Replace original file
+});
 
 // Run 'node app.js'
 gulp.task('start-server', () => {
@@ -98,7 +106,7 @@ gulp.task('production', [], () => {
     http://stackoverflow.com/a/32188928
 */
 gulp.task('watch-file-change', ['start-browser-sync', 'scss-to-css', 'start-server'], () => {
-    gulp.watch(cssScssDirConfigs.publicSassDir, ['scss-to-css']);
+    gulp.watch(cssScssDirConfigs.publicSassDir, ['revReplace']);
     gulp.watch('**/views/**/*.handlebars').on('change', reload);
     gulp.watch('**/app.js').on('change', reload);
 });
