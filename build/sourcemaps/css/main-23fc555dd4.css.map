@@ -1,0 +1,1 @@
+{"version":3,"sources":["main.css"],"names":[],"mappings":"AAAA;EACE,0BAA0B;CAC3B;;AAED;EACE,gBAAgB;EAChB,aAAa;CACd","file":"css/main-23fc555dd4.css","sourcesContent":["body {\n  background-color: #eeddcc;\n}\n\n.currency.selected {\n  font-size: 30px;\n  color: green;\n}\n"],"sourceRoot":"/source/"}
