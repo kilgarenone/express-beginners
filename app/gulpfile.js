@@ -31,6 +31,13 @@ const autoprefixerOptions = {
     ],
 };
 
+// Need 'gulp-plumber' to prevent gulp task crashing upon error
+// See: https://gist.github.com/floatdrop/8269868
+function plumberErrHandler(err) {
+    $.util.log(err);
+    this.emit('end');
+}
+
 /*
     BROWSER SYNC enables browser to automatically refresh pages being watched
     or update certain UI portions of a page due to CSS changes
@@ -44,6 +51,7 @@ gulp.task('start-browser-sync', () => {
 // Compile SCSS to CSS
 gulp.task('scss-to-css', () => {
     const stream = gulp.src(cssScssDirConfigs.publicSassDir, { base: './assets' }) // Get SCSS files
+                        .pipe($.plumber({ errorHandler: plumberErrHandler })) //
                         .pipe($.sourcemaps.init()) // Build sourcemaps for easy CSS debugging on front-end
                         .pipe($.sass(sassOptions).on('error', $.sass.logError)) // Gulp process is by default killed when there's an error parsing sass. The error handler prevents that and tells us where went wrong too
                         .pipe($.autoprefixer(autoprefixerOptions)) // Add prefixes to some modern CSS properties for better browser support
