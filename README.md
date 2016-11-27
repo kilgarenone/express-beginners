@@ -37,7 +37,7 @@ Codes are well commented, and credits and sources are linked in the comments.
 
 ## Get Started
 #### Step 1
-Run `git clone https://github.com/kilgarenone/express-wired` in a new directory.
+Run `git clone https://github.com/kilgarenone/express-consensus` in a new directory.
 #### Step 2
 Run `npm install` from the root directory to install all of the dependencies listed in the package.json
 #### Step 3
