@@ -8,10 +8,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/kilgarenone/express-wired.git"
+    "url": "https://github.com/kilgarenone/express-consensus.git"
   },
   "bugs": {
-    "url": "https://github.com/kilgarenone/express-wired/issues"
+    "url": "https://github.com/kilgarenone/express-consensus/issues"
   },
   "author": "Kheoh Yee Wei",
   "license": "MIT",
