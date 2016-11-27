@@ -35,7 +35,7 @@ Codes are well commented, and credits and sources are linked in the comments.
 - CSS autoprefix using [gulp-autoprefixer](https://github.com/sindresorhus/gulp-autoprefixer).
 - Files revisioning and cache busting using [gulp-rev](https://github.com/sindresorhus/gulp-rev) and [gulp-rev-replace](https://github.com/jamesknelson/gulp-rev-replace).
 
-## Get Started
+## Getting Started
 #### Step 1
 Run `git clone https://github.com/kilgarenone/express-consensus` in a new directory.
 #### Step 2
