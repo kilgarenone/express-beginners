@@ -29,11 +29,11 @@ Codes are well commented, and credits and sources are linked in the comments.
 - A [file](https://github.com/kilgarenone/express-consensus/blob/master/learnMiddlewareFlow.js) to quickly learn the concept of how logic flows through Middlewares.
 
 #### Things covered in the gulpfile.js
-- Hot reload using 'Browser Sync'.
-- SCSS to CSS conversion using 'gulp-sass'.
-- CSS sourcemap using 'gulp-sourcemaps'.
-- CSS autoprefix using 'gulp-autoprefixer'.
-- Files revisioning and cache busting using 'gulp-rev' and 'gulp-rev-replace'.
+- Hot reload using [Browser Sync](https://www.browsersync.io/docs/gulp).
+- SCSS to CSS conversion using [gulp-sass](https://github.com/dlmanning/gulp-sass).
+- CSS sourcemap using [gulp-sourcemaps](https://github.com/floridoo/gulp-sourcemaps).
+- CSS autoprefix using [gulp-autoprefixer](https://github.com/sindresorhus/gulp-autoprefixer).
+- Files revisioning and cache busting using [gulp-rev](https://github.com/sindresorhus/gulp-rev) and [gulp-rev-replace](https://github.com/jamesknelson/gulp-rev-replace).
 
 ## Get Started
 #### Step 1
