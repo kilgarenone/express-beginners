@@ -1,4 +1,4 @@
-## Why this?
+## Motivation
 
 I'd dabbled with NodeJS before, but it wasn't until 2 months ago(Oct 2016) that I really tried to put as much of everything together to serve as a decent basis for web development for beginners.
 
