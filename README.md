@@ -10,23 +10,23 @@ Therefore, this repo consolidates and structures all of my knowledges of the opi
 Codes are well commented, and credits and sources are linked in the comments.
 
 #### Here are the things covered in this repo
-- ES2015 features.
-- MVVM structure.
+- [ES2015](http://www.2ality.com/2015/08/getting-started-es6.html) features.
+- [MVVM](https://addyosmani.com/blog/understanding-mvvm-a-guide-for-javascript-developers/) structure.
 - Separate 'node_modules' folder for shared app's local modules. [See here](https://stackoverflow.com/questions/10860244/how-to-make-the-require-in-node-js-to-be-always-relative-to-the-root-folder-of-t/24461606#24461606)
-- Promises pattern.
-- Templating with Handlebars using 'express-handlebars' npm.
+- [Promises](https://developers.google.com/web/fundamentals/getting-started/primers/promises) pattern.
+- Templating with Handlebars using [express-handlebars](https://github.com/ericf/express-handlebars).
 - Static files serving. 
-- Email services using 'Nodemailer'.
-- Facebook Login user authentication using 'Passport.js'
-- File uploading to local using 'Multer'.
-- Logging to console and file rotation using 'Winston' and 'Morgan'.
-- MongoDB database interaction using 'Mongoose'.
-- Persistent sessions using 'connect-redis' npm.
-- GZIP compression using 'compression' npm.
-- Parse request body data using 'body-parser' npm.
-- Basic security measures using 'Helmet' npm.
-- Favicon using 'serve-favicon' npm.
-- A file to quickly learn the concept of how logic flows through Middlewares.
+- Email services using [Nodemailer](https://github.com/nodemailer/nodemailer).
+- Facebook Login user authentication using [Passport.js](https://github.com/jaredhanson/passport).
+- File uploading to local using [Multer](https://github.com/expressjs/multer).
+- Logging to console and file rotation using [Winston](https://github.com/winstonjs/winston) and [Morgan](https://github.com/expressjs/morgan).
+- MongoDB database interaction using [Mongoose](https://github.com/Automattic/mongoose).
+- Persistent sessions using [connect-redis](https://github.com/tj/connect-redis).
+- GZIP compression using [compression](https://github.com/expressjs/compression).
+- Parse request body data using [body-parser](https://github.com/expressjs/body-parser).
+- Basic security measures using [Helmet](https://github.com/helmetjs/helmet).
+- Favicon using [serve-favicon](https://github.com/expressjs/serve-favicon).
+- A [file](https://github.com/kilgarenone/express-consensus/blob/master/learnMiddlewareFlow.js) to quickly learn the concept of how logic flows through Middlewares.
 
 #### Things covered in the gulpfile.js
 - Hot reload using 'Browser Sync'.
