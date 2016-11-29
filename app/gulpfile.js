@@ -84,8 +84,9 @@ gulp.task('revReplace', ['scss-to-css'], () => { // finish 'scss-to-css' task be
 });
 
 // Run 'node app.js'
+// See: http://stackoverflow.com/a/39534123/73323
 gulp.task('start-server', () => {
-    spawn('node', ['app.js'], { stdio: 'inherit' });
+    spawn('node', ['app.js'], { stdio: 'inherit' }); 
 });
 
 // 'gulp test' to run all tests
